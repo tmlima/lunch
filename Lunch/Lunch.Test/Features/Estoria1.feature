@@ -3,9 +3,15 @@
 	Eu como profissional faminto 
 	Quero votar no meu restaurante favorito 
 
+Background:
+    Given um usuário
+	And uma eleição
+	And um restaurante "Palatus"
+	And um restaurante "32"
+
 Scenario: Usuário votar
-	Given ninguém tenha votado
-	When eu votar em meu restaurante favorito
+	Given eu não tenha votado
+	When eu votar no restaurante "Palatus"
 	Then vai aparecer nos resultados somente um voto
 
 Scenario: Um profissional só pode votar em um restaurante por dia
@@ -14,6 +20,6 @@ Scenario: Um profissional só pode votar em um restaurante por dia
 	Then vai aparecer a mensagem de erro "Só é possível votar em um restaurante por dia"
 
 Scenario: Usuário não pode votar após a data e horário limite
-	Given uma eleição que já tenha sido encerrada
-	When eu tentar votar no restaurante "32"
+	Given eleição tenha sido encerrada
+	When eu votar no restaurante "32"
 	Then vai aparecer a mensagem de erro "Eleição já foi encerrada"
