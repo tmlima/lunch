@@ -20,9 +20,9 @@ namespace Lunch.Domain.Entities
         public void AddVote(Vote vote)
         {
             if (Votes.Any(x => x.User == vote.User))
-                throw new Exception("Só é possível votar em um restaurante por dia");
+                throw new RuleBrokenException("Só é possível votar em um restaurante por dia");
             if (DateTime.Now > ClosingTime)
-                throw new Exception("Eleição já foi encerrada");
+                throw new RuleBrokenException("Eleição já foi encerrada");
 
             Votes = Votes.Append(vote);
         }

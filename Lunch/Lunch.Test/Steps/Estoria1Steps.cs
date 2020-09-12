@@ -1,5 +1,6 @@
 ﻿using Lunch.Application.Interfaces;
 using Lunch.Application.Services;
+using Lunch.Domain;
 using Lunch.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -77,10 +78,17 @@ namespace Lunch.Test.Steps
         [When(@"eu votar no restaurante ""(.*)""")]
         public void WhenEuVotarNoRestaurante(string restaurante)
         {
-            int userId = _scenarioContext.Get<int>("userId");
-            int poolId = _scenarioContext.Get<int>("poolId");
-            int restaurantId = restaurantAppService.Add(restaurante);
-            poolAppService.Vote(poolId, userId, restaurantId);
+            try
+            {
+                int userId = _scenarioContext.Get<int>("userId");
+                int poolId = _scenarioContext.Get<int>("poolId");
+                int restaurantId = restaurantAppService.Add(restaurante);
+                poolAppService.Vote(poolId, userId, restaurantId);
+            }
+            catch (RuleBrokenException e)
+            {
+                _scenarioContext.Add("error", e.Message);
+            }
         }
         
         [Then(@"vai aparecer nos resultados somente um voto")]
@@ -92,9 +100,10 @@ namespace Lunch.Test.Steps
         }
         
         [Then(@"vai aparecer a mensagem de erro ""(.*)""")]
-        public void ThenVaiAparecerAMensagemDeErro(string p0)
+        public void ThenVaiAparecerAMensagemDeErro(string message)
         {
-            ScenarioContext.Current.Pending();
+            string error = _scenarioContext.Get<string>("error");
+            Assert.Equal(message, error);
         }
     }
 }
