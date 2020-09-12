@@ -24,7 +24,7 @@ namespace Lunch.Domain.Entities
             if (DateTime.Now > ClosingTime)
                 throw new Exception("Eleição já foi encerrada");
 
-            Votes.Append(vote);
+            Votes = Votes.Append(vote);
         }
 
         public Dictionary<Restaurant, int> GetResults()
