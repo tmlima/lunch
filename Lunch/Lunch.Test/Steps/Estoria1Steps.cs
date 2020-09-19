@@ -1,5 +1,5 @@
-﻿using Lunch.Application.Interfaces;
-using Lunch.Application.Services;
+﻿using Lunch.Domain.Interfaces;
+using Lunch.Domain.Services;
 using Lunch.Domain;
 using Lunch.Domain.Entities;
 using System;
@@ -15,16 +15,16 @@ namespace Lunch.Test.Steps
     public class Estoria1Steps
     {
         private readonly ScenarioContext _scenarioContext;
-        private IPoolAppService poolAppService;
-        private IRestaurantAppService restaurantAppService;
-        private IUserAppService userAppService;
+        private IPoolService poolAppService;
+        private IRestaurantService restaurantAppService;
+        private IUserService userAppService;
 
         public Estoria1Steps(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
-            restaurantAppService = new RestaurantAppService();
-            userAppService = new UserAppService();
-            poolAppService = new PoolAppService(restaurantAppService, userAppService);
+            restaurantAppService = new RestaurantService();
+            userAppService = new UserService();
+            poolAppService = new PoolService(restaurantAppService, userAppService);
         }
 
 
