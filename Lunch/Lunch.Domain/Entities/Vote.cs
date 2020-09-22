@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lunch.Domain.Entities
 {
-    public class Vote
+    public class Vote : EntityBase
     {
         public User User { get; private set; }
         public Restaurant Restaurant { get; private set; }

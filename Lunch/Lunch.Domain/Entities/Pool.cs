@@ -4,9 +4,8 @@ using System.Linq;
 
 namespace Lunch.Domain.Entities
 {
-    public class Pool
+    public class Pool : EntityBase
     {
-        public int Id { get; private set; }
         public DateTime ClosingTime { get; private set; }
         public IEnumerable<Vote> Votes { get; private set; }
 

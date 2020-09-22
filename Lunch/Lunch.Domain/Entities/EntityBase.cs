@@ -4,11 +4,8 @@ using System.Text;
 
 namespace Lunch.Domain.Entities
 {
-    public class User : EntityBase
+    public abstract class EntityBase
     {
-        public User(int id)
-        {
-            this.Id = id;
-        }
+        public int Id { get; protected set; }
     }
 }
