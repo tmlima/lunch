@@ -4,7 +4,7 @@ namespace Lunch.Domain.Interfaces
 {
     public interface IUserService
     {
-        int CreateUser();
+        int CreateUser(string name);
         User GetUser(int userId); 
     }
 }

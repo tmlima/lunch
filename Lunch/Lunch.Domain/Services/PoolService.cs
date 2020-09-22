@@ -1,8 +1,8 @@
-﻿using Lunch.Domain.Interfaces;
-using Lunch.Domain.Entities;
+﻿using Lunch.Domain.Entities;
+using Lunch.Domain.Interfaces;
+using Lunch.Domain.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Lunch.Domain.Services
 {
@@ -10,33 +10,35 @@ namespace Lunch.Domain.Services
     {
         private IRestaurantService restaurantAppService;
         private IUserService userAppService;
+        private IPoolRepository poolRepository;
+        private IVoteRepository voteRepository;
 
-        List<Pool> pools = new List<Pool>();
-
-        public PoolService(IRestaurantService restaurantAppService, IUserService userAppService)
+        public PoolService( IPoolRepository poolRepository, IVoteRepository voteRepository, IRestaurantService restaurantAppService, IUserService userAppService)
         {
+            this.poolRepository = poolRepository;
+            this.voteRepository = voteRepository;
             this.restaurantAppService = restaurantAppService;
             this.userAppService = userAppService;
         }
 
         public int CreatePool(DateTime closingTime)
         {
-            int poolId = pools.Count + 1;
-            pools.Add(new Pool(poolId, closingTime));
+            int poolId = poolRepository.Add( closingTime );
             return poolId;
         }
 
         public Dictionary<Restaurant, int> GetResults(int poolId)
         {
-            return pools.Single(x => x.Id == poolId).GetResults();
+            return poolRepository.Get( poolId ).GetResults();
         }
 
         public void Vote(int poolId, int userId, int restaurantId)
         {
-            Pool pool = pools.Single(x => x.Id == poolId);
+            Pool pool = poolRepository.Get( poolId );
             Restaurant restaurant = restaurantAppService.Get(restaurantId);
             User user = userAppService.GetUser(userId);
-            pool.AddVote(new Vote(user, restaurant));
+            pool.AddVote( new Entities.Vote( user, restaurant ) );
+            voteRepository.Add( user, pool, restaurant );
         }
     }
 }

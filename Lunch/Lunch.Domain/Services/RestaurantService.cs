@@ -1,24 +1,32 @@
-﻿using Lunch.Domain.Interfaces;
-using Lunch.Domain.Entities;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Lunch.Domain.Entities;
+using Lunch.Domain.Interfaces;
+using Lunch.Domain.Repositories;
 
 namespace Lunch.Domain.Services
 {
     public class RestaurantService : IRestaurantService
     {
-        List<Restaurant> restaurants = new List<Restaurant>();
+        private IRestaurantRepository restaurantRepository;
+
+        public RestaurantService(IRestaurantRepository restaurantRepository)
+        {
+            this.restaurantRepository = restaurantRepository;
+        }
 
         public int Add(string name)
         {
-            int id = restaurants.Count + 1;
-            restaurants.Add(new Restaurant(id, name));
-            return id;
+            int restaurantId = restaurantRepository.Add( name );
+            return restaurantId;
         }
 
         public Restaurant Get(int id)
         {
-            return restaurants.Single(x => x.Id == id);
+            return restaurantRepository.Get( id );
+        }
+
+        public Restaurant GetByName( string name )
+        {
+            return restaurantRepository.GetByName( name );
         }
     }
 }

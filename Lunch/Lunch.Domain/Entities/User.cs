@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Lunch.Domain.Entities
+﻿namespace Lunch.Domain.Entities
 {
     public class User : EntityBase
     {
-        public User(int id)
+        public string Name { get; private set; }
+
+        public User(int id, string name)
         {
             this.Id = id;
+            this.Name = name;
         }
     }
 }

@@ -11,14 +11,19 @@ namespace Lunch.Domain.Entities
 
         public Pool(int id, DateTime closingTime)
         {
-            this.Id = id;
-            this.ClosingTime = closingTime;
+            Id = id;
+            ClosingTime = closingTime;
             Votes = new List<Vote>();
+        }
+
+        public Pool(int id, DateTime closingTime, IList<Vote> votes) : this(id, closingTime)
+        {
+            Votes = votes;
         }
 
         public void AddVote(Vote vote)
         {
-            if (Votes.Any(x => x.User == vote.User))
+            if (Votes.Any(x => x.User.Id == vote.User.Id))
                 throw new RuleBrokenException("Só é possível votar em um restaurante por dia");
             if (DateTime.Now > ClosingTime)
                 throw new RuleBrokenException("Eleição já foi encerrada");

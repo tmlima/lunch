@@ -1,24 +1,27 @@
-﻿using Lunch.Domain.Interfaces;
-using Lunch.Domain.Entities;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Lunch.Domain.Entities;
+using Lunch.Domain.Interfaces;
+using Lunch.Domain.Repositories;
 
 namespace Lunch.Domain.Services
 {
     public class UserService : IUserService
     {
-        private List<User> users = new List<User>();
+        private IUserRepository userRepository;
 
-        public int CreateUser()
+        public UserService(IUserRepository userRepository)
         {
-            int userId = users.Count + 1;
-            users.Add(new User(userId));
+            this.userRepository = userRepository;
+        }
+
+        public int CreateUser(string name)
+        {
+            int userId = userRepository.Add( name );
             return userId;
         }
 
         public User GetUser(int userId)
         {
-            return users.Single(x => x.Id == userId);
+            return userRepository.Get( userId );
         }
     }
 }

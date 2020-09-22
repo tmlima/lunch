@@ -6,5 +6,6 @@ namespace Lunch.Domain.Interfaces
     {
         int Add(string name);
         Restaurant Get(int id);
+        Restaurant GetByName( string name );
     }
 }
