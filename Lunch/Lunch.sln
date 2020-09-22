@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lunch.Domain", "Lunch.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lunch.Test", "Lunch.Test\Lunch.Test.csproj", "{14A1FA5C-C08A-4B44-A507-859F5802FEDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lunch.Infra.Data", "Lunch.Infra.Data\Lunch.Infra.Data.csproj", "{091B4E5F-2AAE-4777-B1DA-D4D98E4047F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{14A1FA5C-C08A-4B44-A507-859F5802FEDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14A1FA5C-C08A-4B44-A507-859F5802FEDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14A1FA5C-C08A-4B44-A507-859F5802FEDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{091B4E5F-2AAE-4777-B1DA-D4D98E4047F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{091B4E5F-2AAE-4777-B1DA-D4D98E4047F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{091B4E5F-2AAE-4777-B1DA-D4D98E4047F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{091B4E5F-2AAE-4777-B1DA-D4D98E4047F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
