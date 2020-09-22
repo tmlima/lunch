@@ -1,7 +1,12 @@
-﻿using Lunch.Domain.Interfaces;
-using Lunch.Domain.Services;
-using Lunch.Domain;
+﻿using Lunch.Domain;
 using Lunch.Domain.Entities;
+using Lunch.Domain.Interfaces;
+using Lunch.Domain.Repositories;
+using Lunch.Domain.Services;
+using Lunch.Infra.Data.Data;
+using Lunch.Infra.Data.Repositories;
+using Lunch.Test.InMemory;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +27,20 @@ namespace Lunch.Test.Steps
         public Estoria1Steps(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
-            restaurantAppService = new RestaurantService();
-            userAppService = new UserService();
-            poolAppService = new PoolService(restaurantAppService, userAppService);
-        }
 
+            string dbName = Guid.NewGuid().ToString();
+            DbContextOptionsBuilder<LunchDbContext> contextOptionsBuilder = new DbContextOptionsBuilder<LunchDbContext>().UseInMemoryDatabase( dbName );
+            LunchDbContextInMemory dbContext = new LunchDbContextInMemory( contextOptionsBuilder.Options );
+
+            IRestaurantRepository restaurantRepository = new RestaurantRepository( dbContext );
+            IUserRepository userRepository = new UserRepository( dbContext );
+            IVoteRepository voteRepository = new VoteRepository( dbContext );
+            IPoolRepository poolRepository = new PoolRepository( dbContext );
+
+            restaurantAppService = new RestaurantService(restaurantRepository);
+            userAppService = new UserService(userRepository);
+            poolAppService = new PoolService(poolRepository, voteRepository, restaurantAppService, userAppService);
+        }
 
         [Given(@"uma eleição")]
         public void GivenUmaEleicao()
@@ -38,7 +52,7 @@ namespace Lunch.Test.Steps
         [Given(@"um usuário")]
         public void GivenUmUsuario()
         {
-            int userId = userAppService.CreateUser();
+            int userId = userAppService.CreateUser("first");
             _scenarioContext.Add("userId", userId);
         }
 
@@ -82,7 +96,7 @@ namespace Lunch.Test.Steps
             {
                 int userId = _scenarioContext.Get<int>("userId");
                 int poolId = _scenarioContext.Get<int>("poolId");
-                int restaurantId = restaurantAppService.Add(restaurante);
+                int restaurantId = restaurantAppService.GetByName(restaurante).Id;
                 poolAppService.Vote(poolId, userId, restaurantId);
             }
             catch (RuleBrokenException e)
