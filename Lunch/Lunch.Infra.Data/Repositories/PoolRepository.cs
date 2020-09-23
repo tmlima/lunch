@@ -33,10 +33,5 @@ namespace Lunch.Infra.Data.Repositories
             ) ).ToList();
             return new Pool(pool.Id, pool.ClosingTime, votes);
         }
-
-        public IList<Pool> GetAll()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

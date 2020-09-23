@@ -1,10 +1,7 @@
 ﻿using Lunch.Domain.Entities;
 using Lunch.Domain.Repositories;
 using Lunch.Infra.Data.Data;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Lunch.Infra.Data.Repositories
 {
@@ -26,11 +23,6 @@ namespace Lunch.Infra.Data.Repositories
         {
             Models.Restaurant restaurant = dbContext.Restaurants.Single( x => x.Id == id );
             return new Restaurant( restaurant.Id, restaurant.Name );
-        }
-
-        public IList<Restaurant> GetAll()
-        {
-            throw new NotImplementedException();
         }
 
         public Restaurant GetByName( string name )
