@@ -1,5 +1,4 @@
-﻿using Lunch.Domain;
-using Lunch.Domain.Entities;
+﻿using Lunch.Domain.Entities;
 using Lunch.Domain.Interfaces;
 using Lunch.Domain.Repositories;
 using Lunch.Domain.Services;
@@ -92,16 +91,19 @@ namespace Lunch.Test.Steps
         [When(@"eu votar no restaurante ""(.*)""")]
         public void WhenEuVotarNoRestaurante(string restaurante)
         {
-            try
+            int userId = _scenarioContext.Get<int>("userId");
+            int poolId = _scenarioContext.Get<int>("poolId");
+            int restaurantId = restaurantAppService.GetByName(restaurante).Id;
+
+            IReadOnlyCollection<string> errors = poolAppService.CanVote( poolId, userId );
+            if ( errors.Any() )
             {
-                int userId = _scenarioContext.Get<int>("userId");
-                int poolId = _scenarioContext.Get<int>("poolId");
-                int restaurantId = restaurantAppService.GetByName(restaurante).Id;
-                poolAppService.Vote(poolId, userId, restaurantId);
+                foreach ( string e in errors )
+                    _scenarioContext.Add( "error", e );
             }
-            catch (RuleBrokenException e)
+            else
             {
-                _scenarioContext.Add("error", e.Message);
+                poolAppService.Vote( poolId, userId, restaurantId );
             }
         }
         

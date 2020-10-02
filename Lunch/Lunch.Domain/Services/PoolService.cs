@@ -3,6 +3,7 @@ using Lunch.Domain.Interfaces;
 using Lunch.Domain.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lunch.Domain.Services
 {
@@ -32,11 +33,20 @@ namespace Lunch.Domain.Services
             return poolRepository.Get( poolId ).GetResults();
         }
 
-        public void Vote(int poolId, int userId, int restaurantId)
+        public IReadOnlyCollection<string> CanVote(int poolId, int userId)
         {
             Pool pool = poolRepository.Get( poolId );
-            Restaurant restaurant = restaurantAppService.Get(restaurantId);
-            User user = userAppService.GetUser(userId);
+            return pool.CanVote( userId );
+        }
+
+        public void Vote(int poolId, int userId, int restaurantId)
+        {
+            if ( CanVote( poolId, userId ).Any() )
+                throw new InvalidOperationException();
+
+            Pool pool = poolRepository.Get( poolId );
+            User user = userAppService.GetUser( userId );
+            Restaurant restaurant = restaurantAppService.Get( restaurantId );
             pool.AddVote( new Entities.Vote( user, restaurant ) );
             voteRepository.Add( user, pool, restaurant );
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Lunch.Domain.Entities
@@ -21,12 +22,22 @@ namespace Lunch.Domain.Entities
             Votes = votes;
         }
 
+        public IReadOnlyCollection<string> CanVote(int userId)
+        {
+            Collection<string> errors = new Collection<string>();
+
+            if ( Votes.Any( x => x.User.Id == userId ) )
+                errors.Add( "Só é possível votar em um restaurante por dia" );
+            if ( DateTime.Now > ClosingTime )
+                errors.Add( "Eleição já foi encerrada" );
+
+            return errors;
+        }
+
         public void AddVote(Vote vote)
         {
-            if (Votes.Any(x => x.User.Id == vote.User.Id))
-                throw new RuleBrokenException("Só é possível votar em um restaurante por dia");
-            if (DateTime.Now > ClosingTime)
-                throw new RuleBrokenException("Eleição já foi encerrada");
+            if ( CanVote(vote.User.Id).Any() )
+                throw new InvalidOperationException();
 
             Votes = Votes.Append(vote);
         }
