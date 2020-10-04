@@ -11,12 +11,13 @@ namespace Lunch.Infra.Data.Repositories
 
         public int Add( string name )
         {
-            dbContext.Users.Add( new Models.User()
+            Models.User user = new Models.User()
             {
                 Name = name
-            } );
-            int id = dbContext.SaveChanges();
-            return id;
+            };
+            dbContext.Users.Add( user );
+            dbContext.SaveChanges();
+            return user.Id;
         }
 
         public User Get( int id )

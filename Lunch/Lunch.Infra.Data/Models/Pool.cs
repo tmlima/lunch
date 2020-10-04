@@ -9,6 +9,7 @@ namespace Lunch.Infra.Data.Models
         public int Id { get; set; }
         public DateTime ClosingTime { get; set; }
         public ICollection<Vote> Votes { get; set; }
+        public Restaurant RestaurantElected { get; set; }
 
         public Pool()
         {

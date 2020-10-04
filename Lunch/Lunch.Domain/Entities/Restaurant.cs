@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Lunch.Domain.Entities
 {
@@ -12,6 +10,21 @@ namespace Lunch.Domain.Entities
         {
             this.Id = id;
             this.Name = name;
+        }
+
+        public override bool Equals( object obj )
+        {
+            if ( obj != null )
+                if ( obj.GetType() == typeof( Restaurant ) )
+                    if ( this.Id == ((Restaurant)obj).Id )
+                        return true;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine( Id, Name );
         }
     }
 }

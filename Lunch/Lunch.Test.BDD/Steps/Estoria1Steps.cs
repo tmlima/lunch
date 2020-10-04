@@ -65,7 +65,7 @@ namespace Lunch.Test.BDD.Steps
         public void GivenEuNaoTenhaVotado()
         {
             int poolId = _scenarioContext.Get<int>( "poolId" );
-            Dictionary<Restaurant, int> results = poolAppService.GetResults( poolId );
+            Dictionary<Restaurant, int> results = poolAppService.GetPoolResults( poolId );
             Assert.Empty( results.Keys );
         }
 
@@ -110,7 +110,7 @@ namespace Lunch.Test.BDD.Steps
         public void ThenVaiAparecerNosResultadosSomenteUmVoto()
         {
             int poolId = _scenarioContext.Get<int>( "poolId" );
-            Dictionary<Restaurant, int> results = poolAppService.GetResults( poolId );
+            Dictionary<Restaurant, int> results = poolAppService.GetPoolResults( poolId );
             Assert.Equal( 1, results.Sum( x => x.Value ) );
         }
 
