@@ -4,6 +4,7 @@ using Lunch.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 
 namespace Lunch.Domain.Services
@@ -14,6 +15,8 @@ namespace Lunch.Domain.Services
         private IUserService userAppService;
         private IPoolRepository poolRepository;
         private IVoteRepository voteRepository;
+        private const CalendarWeekRule DefaultCalendarWeekRule = CalendarWeekRule.FirstDay;
+        private const DayOfWeek DefaultFirstDayOfWeek = DayOfWeek.Monday;
 
         public PoolService( IPoolRepository poolRepository, IVoteRepository voteRepository, IRestaurantService restaurantAppService, IUserService userAppService)
         {
@@ -63,42 +66,48 @@ namespace Lunch.Domain.Services
             Pool pool = poolRepository.Get( poolId );
             User user = userAppService.GetUser( userId );
             Restaurant restaurant = restaurantAppService.Get( restaurantId );
-            pool.AddVote( new Entities.Vote( user, restaurant ) );
+            pool.AddVote( new Vote( user, restaurant ) );
             voteRepository.Add( user, pool, restaurant );
         }
 
         public int GetRestaurantElected( int poolId )
         {
             Pool pool = poolRepository.Get( poolId );
-            Dictionary<Restaurant, int> results = pool.GetResults();
-            IEnumerable<Restaurant> restaurantsElected = results.OrderByDescending( x => x.Value ).Select( x => x.Key );
-            ICollection<Pool> sameWeekPools = GetWeekPools(pool.ClosingTime);
+            if ( pool.RestaurantElected == null )
+                UpdateAllClosedPoolsResult();
 
-            foreach (Restaurant r in restaurantsElected)
+            return poolRepository.Get( poolId ).RestaurantElected.Id;
+        }
+
+        private void UpdateAllClosedPoolsResult()
+        {
+            IEnumerable<Pool> closedPoolsNotUpdated = poolRepository.All().Where( x => x.RestaurantElected == null && x.ClosingTime < DateTime.Now );
+            IEnumerable<IGrouping<int, Pool>> weeks = closedPoolsNotUpdated.GroupBy( x => DateTimeFormatInfo.InvariantInfo.Calendar.GetWeekOfYear( x.ClosingTime, DefaultCalendarWeekRule, DefaultFirstDayOfWeek ) );
+            foreach ( IGrouping<int, Pool> w in weeks)
             {
-                if ( RestaurantNotVotedSameWeek( r, sameWeekPools ) )
-                    return r.Id;
+                ICollection<int> electedRestaurantsId = new List<int>();
+                foreach (Pool p in w.OrderBy(x => x.ClosingTime))
+                    electedRestaurantsId.Add( UpdatePoolResult( p, electedRestaurantsId ) );
             }
-
-            return restaurantsElected.First().Id;
         }
 
-        private ICollection<Pool> GetWeekPools(DateTime week)
+        private int UpdatePoolResult(Pool pool, ICollection<int> electedRestaurantsId)
         {
-            throw new NotImplementedException();
-        }
+            IList<Restaurant> results = pool.GetResults().OrderByDescending( x => x.Value ).Select( x => x.Key ).ToList();
+            int? restaurantElectedId = null;
+            foreach ( Restaurant r in results )
+            {
+                if ( !electedRestaurantsId.Contains( r.Id ) )
+                {
+                    restaurantElectedId = r.Id;
+                    break;
+                }
+            }
+            if ( !restaurantElectedId.HasValue )
+                restaurantElectedId = results.First().Id;
 
-        private bool RestaurantNotVotedSameWeek( Restaurant restaurant, ICollection<Pool> sameWeekPools)
-        {
-            throw new NotImplementedException();
-
-            //ICollection<Pool> closedWeekPools;
-            //foreach ( Pool p in closedWeekPools )
-            //{
-            //    Dictionary<Restaurant, int> closedPoolResults = p.GetResults();
-            //    Restaurant mostVoted = closedPoolResults.OrderByDescending( x => x.Value ).FirstOrDefault().Key;
-
-            //}
+            poolRepository.UpdateElectedRestaurant( pool.Id, restaurantElectedId.Value );
+            return restaurantElectedId.Value;
         }
     }
 }

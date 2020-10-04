@@ -9,6 +9,7 @@ namespace Lunch.Domain.Entities
     {
         public DateTime ClosingTime { get; private set; }
         public IEnumerable<Vote> Votes { get; private set; }
+        public Restaurant RestaurantElected { get; private set; }
 
         public Pool(int id, DateTime closingTime)
         {
@@ -17,9 +18,10 @@ namespace Lunch.Domain.Entities
             Votes = new List<Vote>();
         }
 
-        public Pool(int id, DateTime closingTime, IList<Vote> votes) : this(id, closingTime)
+        public Pool(int id, DateTime closingTime, IEnumerable<Vote> votes, Restaurant restaurantElected) : this(id, closingTime)
         {
             Votes = votes;
+            RestaurantElected = restaurantElected;
         }
 
         public IReadOnlyCollection<string> CanVote(int userId)

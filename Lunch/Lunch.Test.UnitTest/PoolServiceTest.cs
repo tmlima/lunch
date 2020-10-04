@@ -21,7 +21,10 @@ namespace Lunch.Test.UnitTest
         private IUserRepository userRepository;
         private IVoteRepository voteRepository;
         private IPoolRepository poolRepository;
+        private IRestaurantRepository restaurantRepository;
         private LunchDbContextInMemory dbContext;
+        private IList<Infra.Data.Models.User> users = new List<Infra.Data.Models.User>();
+        private IList<Infra.Data.Models.Restaurant> restaurants = new List<Infra.Data.Models.Restaurant>();
 
         public PoolServiceTest()
         {
@@ -29,7 +32,7 @@ namespace Lunch.Test.UnitTest
             DbContextOptionsBuilder<LunchDbContext> contextOptionsBuilder = new DbContextOptionsBuilder<LunchDbContext>().UseInMemoryDatabase( dbName );
             dbContext = new LunchDbContextInMemory( contextOptionsBuilder.Options );
 
-            IRestaurantRepository restaurantRepository = new RestaurantRepository( dbContext );
+            restaurantRepository = new RestaurantRepository( dbContext );
             userRepository = new UserRepository( dbContext );
             voteRepository = new VoteRepository( dbContext );
             poolRepository = new PoolRepository( dbContext );
@@ -37,48 +40,118 @@ namespace Lunch.Test.UnitTest
             restaurantService = new RestaurantService( restaurantRepository );
             userService = new UserService( userRepository );
             poolService = new PoolService( poolRepository, voteRepository, restaurantService, userService );
+            CreateUsersAndRestaurants();
         }
 
         [Fact]
         public void SameRestaurantCannotBeChosenTwiceInAWeek()
         {
-            // criar 3 usuarios
-            // na primeira eleicao dois votam no 1
-            // na segunda dois votam no 1
-
-            int user1Id = userService.CreateUser( "user1" );
-            int user2Id = userService.CreateUser( "user2" );
-            int user3Id = userService.CreateUser( "user3" );
-            int restaurant1Id = restaurantService.Add( "restaurant1" );
-            int restaurant2Id = restaurantService.Add( "restaurant2" );
-
-            CreateClosedPoolWhereRestaurantWasElected( restaurant1Id, user1Id, DateTime.Now.AddHours( -1 ) );
-            int poolId = poolService.CreatePool( DateTime.Now.AddHours( 1 ) );
-            poolService.Vote( poolId, user1Id, restaurant1Id );
-            poolService.Vote( poolId, user2Id, restaurant1Id );
-            poolService.Vote( poolId, user3Id, restaurant2Id );
-
-            int electedRestaurantId = poolService.GetRestaurantElected( poolId );
-            Assert.Equal( restaurant2Id, electedRestaurantId );
-        }
-
-        private void CreateClosedPoolWhereRestaurantWasElected(int restaurantId, int userId, DateTime closingTime)
-        {
-            Infra.Data.Models.User user = dbContext.Users.Single( x => x.Id == userId );
-            Infra.Data.Models.Restaurant restaurant = dbContext.Restaurants.Single( x => x.Id == restaurantId );
-
-            dbContext.Pools.Add( new Infra.Data.Models.Pool()
+            CreateClosedPool( new Collection<Infra.Data.Models.Vote>()
             {
-                ClosingTime = DateTime.Now,
-                Votes = new Collection<Infra.Data.Models.Vote>()
+                new Infra.Data.Models.Vote()
                 {
-                    new Infra.Data.Models.Vote()
-                    {
-                        Restaurant = restaurant,
-                        User = user                        
-                    }
+                    User = users[0],
+                    Restaurant = restaurants[0]
                 }
             } );
+
+            int poolId = CreateClosedPool( new Collection<Infra.Data.Models.Vote>()
+            {
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[0],
+                    Restaurant = restaurants[0]
+                },
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[1],
+                    Restaurant = restaurants[0]
+                },
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[2],
+                    Restaurant = restaurants[1]
+                }
+            } );
+
+            int electedRestaurantId = poolService.GetRestaurantElected( poolId );
+            Assert.Equal( restaurants[ 1 ].Id, electedRestaurantId );
+        }
+
+        [Fact]
+        public void GetMostVotedRestaurantWhenAllWereAlreadyElectedInSameWeek()
+        {
+            CreateClosedPool( new Collection<Infra.Data.Models.Vote>()
+            {
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[0],
+                    Restaurant = restaurants[0]
+                }
+            } );
+
+            CreateClosedPool( new Collection<Infra.Data.Models.Vote>()
+            {
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[0],
+                    Restaurant = restaurants[0]
+                },
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[1],
+                    Restaurant = restaurants[0]
+                },
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[2],
+                    Restaurant = restaurants[1]
+                }
+            } );
+
+            int poolId = CreateClosedPool( new Collection<Infra.Data.Models.Vote>()
+            {
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[0],
+                    Restaurant = restaurants[0]
+                },
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[1],
+                    Restaurant = restaurants[0]
+                },
+                new Infra.Data.Models.Vote()
+                {
+                    User = users[2],
+                    Restaurant = restaurants[1]
+                }
+            } );
+
+            int electedRestaurantId = poolService.GetRestaurantElected( poolId );
+            Assert.Equal( restaurants[ 0 ].Id, electedRestaurantId );
+        }
+
+        private void CreateUsersAndRestaurants()
+        {
+            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user1" ) ) );
+            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user2" ) ) );
+            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user3" ) ) );
+
+            restaurants.Add( dbContext.Restaurants.Single( x => x.Id == restaurantService.Add( "restaurant1" ) ) );
+            restaurants.Add( dbContext.Restaurants.Single( x => x.Id == restaurantService.Add( "restaurant2" ) ) );
+        }
+
+        private int CreateClosedPool(ICollection<Infra.Data.Models.Vote> votes)
+        {
+            Infra.Data.Models.Pool pool = new Infra.Data.Models.Pool()
+            {
+                ClosingTime = DateTime.Now,
+                Votes = votes
+            };
+            dbContext.Pools.Add( pool );
+            dbContext.SaveChanges();
+            return pool.Id;
         }
     }
 }
