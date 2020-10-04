@@ -9,6 +9,7 @@ namespace Lunch.Domain.Interfaces
         int CreatePool(DateTime closingTime);
         IReadOnlyCollection<string> CanVote( int poolId, int userId );
         void Vote(int poolId, int userId, int restaurantId);
-        Dictionary<Restaurant, int> GetResults(int poolId);
+        int GetRestaurantElected( int poolId );
+        Dictionary<Restaurant, int> GetPoolResults( int poolId);
     }
 }
