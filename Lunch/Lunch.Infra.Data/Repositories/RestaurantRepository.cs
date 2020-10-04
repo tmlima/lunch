@@ -11,12 +11,13 @@ namespace Lunch.Infra.Data.Repositories
 
         public int Add( string name )
         {
-            dbContext.Restaurants.Add( new Models.Restaurant()
+            Models.Restaurant restaurant = new Models.Restaurant()
             {
                 Name = name
-            } );
-            int id = dbContext.SaveChanges();
-            return id;
+            };
+            dbContext.Restaurants.Add( restaurant );
+            dbContext.SaveChanges();
+            return restaurant.Id;
         }
 
         public Restaurant Get( int id )
