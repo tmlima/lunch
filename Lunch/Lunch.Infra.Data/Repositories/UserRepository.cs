@@ -2,6 +2,7 @@
 using Lunch.Domain.Repositories;
 using Lunch.Infra.Data.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lunch.Infra.Data.Repositories
 {
@@ -9,7 +10,7 @@ namespace Lunch.Infra.Data.Repositories
     {
         public UserRepository(LunchDbContext dbContext) : base(dbContext) { }
 
-        public int Add( string name )
+        public async Task<int> Add( string name )
         {
             Models.User user = new Models.User()
             {
@@ -20,7 +21,7 @@ namespace Lunch.Infra.Data.Repositories
             return user.Id;
         }
 
-        public User Get( int id )
+        public async Task<User> Get( int id )
         {
             Models.User user = dbContext.Users.Single( x => x.Id == id );
             return new User( user.Id, user.Name );

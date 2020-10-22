@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lunch.Domain.Services
 {
@@ -26,62 +27,61 @@ namespace Lunch.Domain.Services
             this.userAppService = userAppService;
         }
 
-        public int CreatePool(DateTime closingTime)
+        public async Task<int> CreatePool(DateTime closingTime)
         {
-            int poolId = poolRepository.Add( closingTime );
+            int poolId = await poolRepository.Add( closingTime );
             return poolId;
         }
 
-        public IReadOnlyCollection<string> CanGetPoolResults(int poolId)
+        public async Task<IReadOnlyCollection<string>> CanGetPoolResults(int poolId)
         {
             Collection<string> errors = new Collection<string>();
-            Pool pool = poolRepository.Get( poolId );
+            Pool pool = await poolRepository.Get( poolId );
             if ( pool.ClosingTime > DateTime.Now )
                 errors.Add( "Pool has not been closed yet" );
 
             return errors;
         }
 
-        public int CanGetRestaurantElected( int poolId )
+        public async Task<int> CanGetRestaurantElected( int poolId )
         {
             throw new NotImplementedException();
         }
 
-        public Dictionary<Restaurant, int> GetPoolResults(int poolId)
+        public async Task<Dictionary<Restaurant, int>> GetPoolResults(int poolId)
         {
-            return poolRepository.Get( poolId ).GetResults();
+            return (await poolRepository.Get( poolId )).GetResults();
         }
 
-        public IReadOnlyCollection<string> CanVote(int poolId, int userId)
+        public async Task<IReadOnlyCollection<string>> CanVote(int poolId, int userId)
         {
-            Pool pool = poolRepository.Get( poolId );
-            return pool.CanVote( userId );
+            return (await poolRepository.Get( poolId )).CanVote( userId );
         }
 
-        public void Vote(int poolId, int userId, int restaurantId)
+        public async Task Vote(int poolId, int userId, int restaurantId)
         {
-            if ( CanVote( poolId, userId ).Any() )
+            if ( (await CanVote( poolId, userId )).Any() )
                 throw new InvalidOperationException();
 
-            Pool pool = poolRepository.Get( poolId );
-            User user = userAppService.GetUser( userId );
-            Restaurant restaurant = restaurantAppService.Get( restaurantId );
+            Pool pool = await poolRepository.Get( poolId );
+            User user = await userAppService.GetUser( userId );
+            Restaurant restaurant = await restaurantAppService.Get( restaurantId );
             pool.AddVote( new Vote( user, restaurant ) );
-            voteRepository.Add( user, pool, restaurant );
+            await voteRepository.Add( user, pool, restaurant );
         }
 
-        public int GetRestaurantElected( int poolId )
+        public async Task<int> GetRestaurantElected( int poolId )
         {
-            Pool pool = poolRepository.Get( poolId );
+            Pool pool = await poolRepository.Get( poolId );
             if ( pool.RestaurantElected == null )
-                UpdateAllClosedPoolsResult();
+                await UpdateAllClosedPoolsResult();
 
-            return poolRepository.Get( poolId ).RestaurantElected.Id;
+            return (await poolRepository.Get( poolId )).RestaurantElected.Id;
         }
 
-        private void UpdateAllClosedPoolsResult()
+        private async Task UpdateAllClosedPoolsResult()
         {
-            IEnumerable<Pool> closedPoolsNotUpdated = poolRepository.All().Where( x => x.RestaurantElected == null && x.ClosingTime < DateTime.Now );
+            IEnumerable<Pool> closedPoolsNotUpdated = (await poolRepository.All()).Where( x => x.RestaurantElected == null && x.ClosingTime < DateTime.Now );
             IEnumerable<IGrouping<int, Pool>> weeks = closedPoolsNotUpdated.GroupBy( x => DateTimeFormatInfo.InvariantInfo.Calendar.GetWeekOfYear( x.ClosingTime, DefaultCalendarWeekRule, DefaultFirstDayOfWeek ) );
             foreach ( IGrouping<int, Pool> w in weeks)
             {

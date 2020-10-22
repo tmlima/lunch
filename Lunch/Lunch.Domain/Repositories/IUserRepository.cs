@@ -1,9 +1,10 @@
 ﻿using Lunch.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Lunch.Domain.Repositories
 {
     public interface IUserRepository : IRepositoryBase<User>
     {
-        int Add( string name );
+        Task<int> Add( string name );
     }
 }

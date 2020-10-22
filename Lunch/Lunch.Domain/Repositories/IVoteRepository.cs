@@ -1,9 +1,10 @@
 ﻿using Lunch.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Lunch.Domain.Repositories
 {
     public interface IVoteRepository : IRepositoryBase<Vote>
     {
-        void Add(User user, Pool pool, Restaurant restaurant);
+        Task Add(User user, Pool pool, Restaurant restaurant);
     }
 }

@@ -74,7 +74,7 @@ namespace Lunch.Test.UnitTest
                 }
             } );
 
-            int electedRestaurantId = poolService.GetRestaurantElected( poolId );
+            int electedRestaurantId = poolService.GetRestaurantElected( poolId ).Result;
             Assert.Equal( restaurants[ 1 ].Id, electedRestaurantId );
         }
 
@@ -128,18 +128,18 @@ namespace Lunch.Test.UnitTest
                 }
             } );
 
-            int electedRestaurantId = poolService.GetRestaurantElected( poolId );
+            int electedRestaurantId = poolService.GetRestaurantElected( poolId ).Result;
             Assert.Equal( restaurants[ 0 ].Id, electedRestaurantId );
         }
 
         private void CreateUsersAndRestaurants()
         {
-            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user1" ) ) );
-            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user2" ) ) );
-            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user3" ) ) );
+            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user1" ).Result ) );
+            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user2" ).Result ) );
+            users.Add( dbContext.Users.Single( x => x.Id == userService.CreateUser( "user3" ).Result ) );
 
-            restaurants.Add( dbContext.Restaurants.Single( x => x.Id == restaurantService.Add( "restaurant1" ) ) );
-            restaurants.Add( dbContext.Restaurants.Single( x => x.Id == restaurantService.Add( "restaurant2" ) ) );
+            restaurants.Add( dbContext.Restaurants.Single( x => x.Id == restaurantService.Add( "restaurant1" ).Result ) );
+            restaurants.Add( dbContext.Restaurants.Single( x => x.Id == restaurantService.Add( "restaurant2" ).Result ) );
         }
 
         private int CreateClosedPool(ICollection<Infra.Data.Models.Vote> votes)

@@ -3,6 +3,7 @@ using Lunch.Domain.Repositories;
 using Lunch.Infra.Data.Data;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lunch.Infra.Data.Repositories
 {
@@ -10,7 +11,7 @@ namespace Lunch.Infra.Data.Repositories
     {
         public VoteRepository(LunchDbContext dbContext) : base(dbContext) { }
 
-        public void Add( User user, Pool pool, Restaurant restaurant )
+        public async Task Add( User user, Pool pool, Restaurant restaurant )
         {
             Models.User userModel = dbContext.Users.Single( x => x.Id == user.Id );
             Models.Pool poolModel = dbContext.Pools.Single( x => x.Id == pool.Id );
@@ -22,10 +23,10 @@ namespace Lunch.Infra.Data.Repositories
                 Pool = poolModel,
                 Restaurant = restaurantModel
             } );
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
         }
 
-        public Vote Get( int id )
+        public async Task<Vote> Get( int id )
         {
             throw new NotImplementedException();
         }

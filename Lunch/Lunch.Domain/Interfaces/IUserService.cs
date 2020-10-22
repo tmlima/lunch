@@ -1,10 +1,11 @@
 ﻿using Lunch.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Lunch.Domain.Interfaces
 {
     public interface IUserService
     {
-        int CreateUser(string name);
-        User GetUser(int userId); 
+        Task<int> CreateUser(string name);
+        Task<User> GetUser(int userId); 
     }
 }

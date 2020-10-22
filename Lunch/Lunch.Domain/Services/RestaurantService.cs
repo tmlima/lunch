@@ -1,6 +1,7 @@
 ﻿using Lunch.Domain.Entities;
 using Lunch.Domain.Interfaces;
 using Lunch.Domain.Repositories;
+using System.Threading.Tasks;
 
 namespace Lunch.Domain.Services
 {
@@ -13,20 +14,20 @@ namespace Lunch.Domain.Services
             this.restaurantRepository = restaurantRepository;
         }
 
-        public int Add(string name)
+        public async Task<int> Add(string name)
         {
-            int restaurantId = restaurantRepository.Add( name );
+            int restaurantId = await restaurantRepository.Add( name );
             return restaurantId;
         }
 
-        public Restaurant Get(int id)
+        public async Task<Restaurant> Get(int id)
         {
-            return restaurantRepository.Get( id );
+            return await restaurantRepository.Get( id );
         }
 
-        public Restaurant GetByName( string name )
+        public async Task<Restaurant> GetByName( string name )
         {
-            return restaurantRepository.GetByName( name );
+            return await restaurantRepository.GetByName( name );
         }
     }
 }

@@ -43,21 +43,21 @@ namespace Lunch.Test.BDD.Steps
         [Given( @"uma eleição" )]
         public void GivenUmaEleicao()
         {
-            int poolId = poolAppService.CreatePool( DateTime.Now.AddHours( 1 ) );
+            int poolId = poolAppService.CreatePool( DateTime.Now.AddHours( 1 ) ).Result;
             _scenarioContext.Add( "poolId", poolId );
         }
 
         [Given( @"um usuário" )]
         public void GivenUmUsuario()
         {
-            int userId = userAppService.CreateUser( "first" );
+            int userId = userAppService.CreateUser( "first" ).Result;
             _scenarioContext.Add( "userId", userId );
         }
 
         [Given( @"um restaurante ""(.*)""" )]
         public void GivenUmRestaurante( string restaurante )
         {
-            int restaurantId = restaurantAppService.Add( restaurante );
+            int restaurantId = restaurantAppService.Add( restaurante ).Result;
             _scenarioContext.Add( "restaurantId" + restaurante, restaurantId );
         }
 
@@ -65,7 +65,7 @@ namespace Lunch.Test.BDD.Steps
         public void GivenEuNaoTenhaVotado()
         {
             int poolId = _scenarioContext.Get<int>( "poolId" );
-            Dictionary<Restaurant, int> results = poolAppService.GetPoolResults( poolId );
+            Dictionary<Restaurant, int> results = poolAppService.GetPoolResults( poolId ).Result;
             Assert.Empty( results.Keys );
         }
 
@@ -82,7 +82,7 @@ namespace Lunch.Test.BDD.Steps
         public void GivenUmaEleicaoQueJaTenhaSidoEncerrada()
         {
             TimeSpan oneSecond = TimeSpan.FromSeconds( 1 );
-            int poolId = poolAppService.CreatePool( DateTime.Now.Add( oneSecond ) );
+            int poolId = poolAppService.CreatePool( DateTime.Now.Add( oneSecond ) ).Result;
             Thread.Sleep( oneSecond );
             _scenarioContext.Set<int>( poolId, "poolId" );
         }
@@ -92,9 +92,9 @@ namespace Lunch.Test.BDD.Steps
         {
             int userId = _scenarioContext.Get<int>( "userId" );
             int poolId = _scenarioContext.Get<int>( "poolId" );
-            int restaurantId = restaurantAppService.GetByName( restaurante ).Id;
+            int restaurantId = restaurantAppService.GetByName( restaurante ).Result.Id;
 
-            IReadOnlyCollection<string> errors = poolAppService.CanVote( poolId, userId );
+            IReadOnlyCollection<string> errors = poolAppService.CanVote( poolId, userId ).Result;
             if ( errors.Any() )
             {
                 foreach ( string e in errors )
@@ -110,7 +110,7 @@ namespace Lunch.Test.BDD.Steps
         public void ThenVaiAparecerNosResultadosSomenteUmVoto()
         {
             int poolId = _scenarioContext.Get<int>( "poolId" );
-            Dictionary<Restaurant, int> results = poolAppService.GetPoolResults( poolId );
+            Dictionary<Restaurant, int> results = poolAppService.GetPoolResults( poolId ).Result;
             Assert.Equal( 1, results.Sum( x => x.Value ) );
         }
 
