@@ -1,5 +1,7 @@
 ﻿using Lunch.Infra.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Net.Sockets;
 
 namespace Lunch.Infra.Data.Data
 {
@@ -10,7 +12,15 @@ namespace Lunch.Infra.Data.Data
         public DbSet<Vote> Votes { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public LunchDbContext( DbContextOptions<LunchDbContext> options ) : base(options) { }
+        public LunchDbContext() :base() { }
+
+        public LunchDbContext( DbContextOptions options ) : base(options) { }
+
+        protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+        {
+            string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=lunch;UserId=LunchUser;Password=wwxvrnziDrda$oz7dHggtgu|msFT7_&#$!~<vd#du!u=uuIl";
+            optionsBuilder.UseSqlServer( connectionString );
+        }
 
         protected override void OnModelCreating( ModelBuilder builder )
         {
