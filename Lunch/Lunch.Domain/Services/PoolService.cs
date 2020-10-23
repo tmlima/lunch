@@ -79,6 +79,11 @@ namespace Lunch.Domain.Services
             return (await poolRepository.Get( poolId )).RestaurantElected.Id;
         }
 
+        public async Task<IEnumerable<Pool>> GetAllAsync()
+        {
+            return await poolRepository.All();
+        }
+
         private async Task UpdateAllClosedPoolsResult()
         {
             IEnumerable<Pool> closedPoolsNotUpdated = (await poolRepository.All()).Where( x => x.RestaurantElected == null && x.ClosingTime < DateTime.Now );

@@ -12,5 +12,6 @@ namespace Lunch.Domain.Interfaces
         Task Vote(int poolId, int userId, int restaurantId);
         Task<int> GetRestaurantElected( int poolId );
         Task<Dictionary<Restaurant, int>> GetPoolResults( int poolId);
+        Task<IEnumerable<Pool>> GetAllAsync();
     }
 }
