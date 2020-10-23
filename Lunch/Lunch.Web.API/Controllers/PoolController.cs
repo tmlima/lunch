@@ -12,27 +12,25 @@ namespace Lunch.Web.API.Controllers
     {
         IPoolService poolService;
 
-        //public PoolController()
         public PoolController( IPoolService poolService )
         {
             this.poolService = poolService;
         }
 
-        // GET: api/<PoolController>
         [HttpGet]
         public IList<PoolReportModel> Get()
         {
-            //IEnumerable<Pool> pools = poolService.GetAllAsync().Result;
+            IEnumerable<Pool> pools = poolService.GetAllAsync().Result;
             IList<PoolReportModel> poolReports = new List<PoolReportModel>();
-            //foreach (Pool p in pools)
-            //{
-            //    poolReports.Add( new PoolReportModel()
-            //    {
-            //        Id = p.Id,
-            //        ClosingTime = p.ClosingTime,
-            //        RestaurantElected = p.RestaurantElected.Name
-            //    } );
-            //}
+            foreach ( Pool p in pools )
+            {
+                poolReports.Add( new PoolReportModel()
+                {
+                    Id = p.Id,
+                    ClosingTime = p.ClosingTime,
+                    RestaurantElected = p.RestaurantElected.Name
+                } );
+            }
 
             return poolReports;
         }

@@ -1,7 +1,5 @@
 ﻿using Lunch.Infra.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System.Net.Sockets;
 
 namespace Lunch.Infra.Data.Data
 {
@@ -18,7 +16,7 @@ namespace Lunch.Infra.Data.Data
 
         protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
         {
-            string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=lunch;UserId=LunchUser;Password=wwxvrnziDrda$oz7dHggtgu|msFT7_&#$!~<vd#du!u=uuIl";
+            string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=lunch;Integrated Security=SSPI";
             optionsBuilder.UseSqlServer( connectionString );
         }
 
