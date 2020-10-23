@@ -6,5 +6,7 @@ namespace Lunch.Test.BDD
     class LunchDbContextInMemory : LunchDbContext
     {
         public LunchDbContextInMemory( DbContextOptions<LunchDbContext> dbContextOptions ) : base( dbContextOptions ) { }
+
+        protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder ) { }
     }
 }
