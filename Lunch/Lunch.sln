@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lunch.Infra.Data", "Lunch.I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{05466D8F-FCF2-4B29-8277-5409AACBE96E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lunch.Test.BDD", "Lunch.Test.BDD\Lunch.Test.BDD.csproj", "{788C4FA5-2D78-48DC-B57A-4AA370C29BCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lunch.Test.BDD", "Lunch.Test.BDD\Lunch.Test.BDD.csproj", "{788C4FA5-2D78-48DC-B57A-4AA370C29BCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lunch.Test.UnitTest", "Lunch.Test.UnitTest\Lunch.Test.UnitTest.csproj", "{12A65BC3-219E-49DF-9FB0-DF0791DED366}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lunch.Test.UnitTest", "Lunch.Test.UnitTest\Lunch.Test.UnitTest.csproj", "{12A65BC3-219E-49DF-9FB0-DF0791DED366}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lunch.Web.API", "Lunch.Web.API\Lunch.Web.API.csproj", "{87D5E9B8-2936-4739-B367-8DA0F5C8A14F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{12A65BC3-219E-49DF-9FB0-DF0791DED366}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12A65BC3-219E-49DF-9FB0-DF0791DED366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12A65BC3-219E-49DF-9FB0-DF0791DED366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87D5E9B8-2936-4739-B367-8DA0F5C8A14F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D5E9B8-2936-4739-B367-8DA0F5C8A14F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D5E9B8-2936-4739-B367-8DA0F5C8A14F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D5E9B8-2936-4739-B367-8DA0F5C8A14F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
