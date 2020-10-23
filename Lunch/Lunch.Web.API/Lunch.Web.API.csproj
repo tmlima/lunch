@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="microsoft.entityframeworkcore.sqlserver" Version="3.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lunch.Domain\Lunch.Domain.csproj" />
+    <ProjectReference Include="..\Lunch.Infra.Data\Lunch.Infra.Data.csproj" />
+  </ItemGroup>
+
+
+</Project>
