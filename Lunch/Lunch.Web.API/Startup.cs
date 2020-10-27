@@ -38,6 +38,9 @@ namespace Lunch.Web.API
             services.AddTransient<IUserService, UserService>();
 
             services.AddControllers();
+
+            services.AddCors( options => options.AddDefaultPolicy(
+                builder => builder.AllowAnyOrigin() ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +54,8 @@ namespace Lunch.Web.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
